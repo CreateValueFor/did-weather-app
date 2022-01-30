@@ -123,3 +123,9 @@
   background: rgba(255, 0, 0, 0.2);
   height: 300px;
 }
+.temperature-index {
+  font-size: 72px;
+  vertical-align: top;
+  width: 72px;
+  height: 107px;
+}
