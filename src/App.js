@@ -58,6 +58,7 @@ function Clock() {
 
 function WeatherImage() {
   const [weather, setWeather] = useState(clear);
+  const [updated, setUpdated] = useState(false)
 
   const latestPredictTime = () => {
     let latestHour = "";
@@ -123,7 +124,54 @@ function WeatherImage() {
           break;
       }
     }
+    const loop = setInterval(async () => {
+      const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
+      if (predict.data.response.body) {
+        let time = new Date()
+        let hour = time.getHours()
 
+        const SKY = predict.data.response.body.items.item[19].fcstValue
+        const PTY = predict.data.response.body.items.item[7].fcstValue
+
+        const weather = getWeather(SKY, PTY);
+
+        switch (weather) {
+          case "맑음":
+            if (hour >= 19 || hour < 6) {
+              setWeather(clear_night)
+            } else {
+              setWeather(clear)
+            }
+            break;
+          case '구름 많음':
+            if (hour >= 19 || hour < 6) {
+              setWeather(cloud_night)
+            } else {
+              setWeather(cloud_day)
+            }
+            break;
+          case '흐림':
+            setWeather(fog)
+            break;
+          case "비":
+            setWeather(rain)
+            break;
+          case '비/눈':
+            setWeather(rain_snow)
+            break;
+          case '눈':
+            setWeather(snow)
+            break;
+          case '소나기':
+            setWeather(shower)
+            break;
+          default:
+            console.log('something wrong')
+            break;
+        }
+      }
+      console.log('업데이트 주기 시작 60초단위')
+    }, 60000);
 
   }, [])
   return (
@@ -135,9 +183,9 @@ function WeatherImage() {
 
 
 
+
 function App() {
 
-  //   풍속 : WSD, 풍향 : VEC, 날씨 : SKY, 강수량 : RN1, 미세먼지
   const [PTY, setPTY] = useState();
   const [T1H, setT1H] = useState();
   const [WSD, setWSD] = useState();
@@ -146,13 +194,23 @@ function App() {
   const [PM10, setPM10] = useState();
 
 
-
-  // const getWeather = async () => {
-  //   return resNow.data.response.body.items
-  // }
   useEffect(async () => {
-    const current_url = `cur?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=$
-    {getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`
+    const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
+    if (air.data.response.body) {
+      const data = air.data.response.body.items[51]
+      setPM10(data.pm10Value)
+    }
+
+    const loop = setInterval(async () => {
+      console.log('1초 단위 루프 실행됨')
+      const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
+      if (air.data.response.body) {
+        const data = air.data.response.body.items[51]
+        setPM10(data.pm10Value)
+      }
+    }, 3600000);
+  }, [])
+  useEffect(async () => {
     const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
 
     if (current.data.response.body) {
@@ -163,18 +221,46 @@ function App() {
       setWSD(WSD)
       setRN1(RN1)
       setVEC(VEC)
-
-
     }
+    const loop = setInterval(async () => {
+      const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+
+      if (current.data.response.body) {
+        const item = current.data.response.body.items.item
+        const { PTY, T1H, WSD, VEC, RN1 } = filterData(item)
+        setPTY(PTY)
+        setT1H(T1H)
+        setWSD(WSD)
+        setRN1(RN1)
+        setVEC(VEC)
+      }
+    }, 60000);
   }, [])
+
+  // useEffect(async () => {
+  //   const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+
+  //   if (current.data.response.body) {
+  //     const item = current.data.response.body.items.item
+  //     const { PTY, T1H, WSD, VEC, RN1 } = filterData(item)
+  //     setPTY(PTY)
+  //     setT1H(T1H)
+  //     setWSD(WSD)
+  //     setRN1(RN1)
+  //     setVEC(VEC)
+  //   }
+  // }, [])
+
   useEffect(async () => {
-    const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
-    if (air.data.response.body) {
-      const data = air.data.response.body.items[51]
-      setPM10(data.pm10Value)
-    }
+    // const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
+    // if (air.data.response.body) {
+    //   const data = air.data.response.body.items[51]
+    //   setPM10(data.pm10Value)
+    // }
 
   }, [])
+
+
 
   return (
     <div className="App">
