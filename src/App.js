@@ -79,7 +79,7 @@ function WeatherImage() {
   }
 
   useEffect(async () => {
-    const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
+    const predict = await axios.get( process.env.REACT_APP_DB_HOST +'/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
     if (predict.data.response.body) {
       let time = new Date()
       let hour = time.getHours()
@@ -125,7 +125,7 @@ function WeatherImage() {
       }
     }
     const loop = setInterval(async () => {
-      const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
+      const predict = await axios.get( process.env.REACT_APP_DB_HOST + '/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
       if (predict.data.response.body) {
         let time = new Date()
         let hour = time.getHours()
@@ -195,7 +195,7 @@ function App() {
 
 
   useEffect(async () => {
-    const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
+    const air = await axios.get( process.env.REACT_APP_DB_HOST +  `air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
     if (air.data.response.body) {
       const data = air.data.response.body.items[51]
       setPM10(data.pm10Value)
@@ -203,7 +203,7 @@ function App() {
 
     const loop = setInterval(async () => {
       console.log('1초 단위 루프 실행됨')
-      const air = await axios.get(`air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
+      const air = await axios.get(process.env.REACT_APP_DB_HOST +  `air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
       if (air.data.response.body) {
         const data = air.data.response.body.items[51]
         setPM10(data.pm10Value)
@@ -211,7 +211,7 @@ function App() {
     }, 3600000);
   }, [])
   useEffect(async () => {
-    const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+    const current = await axios.get(process.env.REACT_APP_DB_HOST +  '/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
 
     if (current.data.response.body) {
       const item = current.data.response.body.items.item
@@ -223,7 +223,7 @@ function App() {
       setVEC(VEC)
     }
     const loop = setInterval(async () => {
-      const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+      const current = await axios.get(process.env.REACT_APP_DB_HOST + '/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
 
       if (current.data.response.body) {
         const item = current.data.response.body.items.item
