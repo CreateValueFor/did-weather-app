@@ -14,7 +14,8 @@ import { filterData, dateFormatter, getCurrentTime, getWeather } from './customH
 
 // const SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
 // const AIR_SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
-const BASE_URL = "http://13.209.8.121:8000/"
+// const BASE_URL = "http://13.209.8.121:8000/"
+const BASE_URL = "/"
 
 
 function Clock() {
