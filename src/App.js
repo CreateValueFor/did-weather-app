@@ -201,7 +201,7 @@ function App() {
     // const air = await axios.get(`/air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
     const air = await axios.get(BASE_URL + 'air')
     if (air.data.response.body) {
-      const data = air.data.response.body.items[51]
+      const data = air.data.response.body.items[0]
       setPM10(data.pm10Value)
     }
 
@@ -210,7 +210,7 @@ function App() {
       // const air = await axios.get(`/air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
       const air = await axios.get(BASE_URL + 'air')
       if (air.data.response.body) {
-        const data = air.data.response.body.items[51]
+        const data = air.data.response.body.items[0]
         setPM10(data.pm10Value)
       }
     }, 3600000);
