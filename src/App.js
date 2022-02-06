@@ -12,8 +12,10 @@ import snow from "./images/icon_weather_6.svg"
 import shower from "./images/icon_weather_7.svg"
 import { filterData, dateFormatter, getCurrentTime, getWeather } from './customHook';
 
-// const SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
-// const AIR_SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
+const AIR_CURRENT_KEY =
+  'sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D';
+const SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
+const AIR_SERVICE_KEY = "sOhJfqSthcEwtpqskBzX%2FkRGGoB9%2F6fdlLalUTx6ot6EACPP0xziXi5EJljSFofskyvxBg0pJ2LxhDhAsFF1Og%3D%3D"
 // const BASE_URL = "http://13.209.8.121:8000/"
 const BASE_URL = "/"
 
@@ -60,28 +62,28 @@ function Clock() {
 function WeatherImage() {
   const [weather, setWeather] = useState(clear);
 
-  // const latestPredictTime = () => {
-  //   let latestHour = "";
+  const latestPredictTime = () => {
+    let latestHour = "";
 
-  //   let time = new Date();
-  //   let hour = time.getHours();
-  //   let minute = time.getMinutes();
+    let time = new Date();
+    let hour = time.getHours();
+    let minute = time.getMinutes();
 
-  //   if (minute > 50) {
-  //     latestHour = hour
-  //   } else {
-  //     time.setHours(time.getHours() - 1);
-  //     latestHour = time.getHours();
-  //   }
-  //   latestHour = latestHour < 10 ? `0${latestHour}` : latestHour
+    if (minute > 50) {
+      latestHour = hour
+    } else {
+      time.setHours(time.getHours() - 1);
+      latestHour = time.getHours();
+    }
+    latestHour = latestHour < 10 ? `0${latestHour}` : latestHour
 
-  //   return { date: dateFormatter(time), time: `${latestHour}00` }
-  // }
+    return { date: dateFormatter(time), time: `${latestHour}00` }
+  }
 
   useEffect(async () => {
-    // const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
+    const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
 
-    const predict = await axios.get(BASE_URL + 'pre')
+    // const predict = await axios.get(BASE_URL + 'pre')
     if (predict.data.response.body) {
       let time = new Date()
       let hour = time.getHours()
@@ -127,8 +129,8 @@ function WeatherImage() {
       }
     }
     const loop = setInterval(async () => {
-      // const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
-      const predict = await axios.get(BASE_URL + 'pre')
+      const predict = await axios.get('/pre' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${latestPredictTime().date}&base_time=${latestPredictTime().time}&nx=62&ny=120`)
+      // const predict = await axios.get(BASE_URL + 'pre')
       if (predict.data.response.body) {
         let time = new Date()
         let hour = time.getHours()
@@ -199,7 +201,10 @@ function App() {
 
   useEffect(async () => {
     // const air = await axios.get(`/air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
-    const air = await axios.get(BASE_URL + 'air')
+    const air = await axios.get(
+      `/air?serviceKey=${AIR_CURRENT_KEY}&returnType=json&numOfRows=100&pageNo=1&stationName=%EC%A4%91%EB%B6%80%EB%8C%80%EB%A1%9C(%EA%B5%AC%EA%B0%88%EB%8F%99)&dataTerm=DAILY&ver=1.0`,
+    )
+    // const air = await axios.get(BASE_URL + 'air')
     if (air.data.response.body) {
       const data = air.data.response.body.items[0]
       setPM10(data.pm10Value)
@@ -208,7 +213,10 @@ function App() {
     const loop = setInterval(async () => {
       console.log('1초 단위 루프 실행됨')
       // const air = await axios.get(`/air?serviceKey=${AIR_SERVICE_KEY}&returnType=json&numOfRows=100&pageNo=1&sidoName=%EA%B2%BD%EA%B8%B0&searchCondition=DAILY`)
-      const air = await axios.get(BASE_URL + 'air')
+      const air = await axios.get(
+        `/air?serviceKey=${AIR_CURRENT_KEY}&returnType=json&numOfRows=100&pageNo=1&stationName=%EC%A4%91%EB%B6%80%EB%8C%80%EB%A1%9C(%EA%B5%AC%EA%B0%88%EB%8F%99)&dataTerm=DAILY&ver=1.0`,
+      )
+      // const air = await axios.get(BASE_URL + 'air')
       if (air.data.response.body) {
         const data = air.data.response.body.items[0]
         setPM10(data.pm10Value)
@@ -216,8 +224,8 @@ function App() {
     }, 3600000);
   }, [])
   useEffect(async () => {
-    // const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
-    const current = await axios.get(BASE_URL + 'cur')
+    const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+    // const current = await axios.get(BASE_URL + 'cur')
     if (current.data.response.body) {
       const item = current.data.response.body.items.item
       const { PTY, T1H, WSD, VEC, RN1 } = filterData(item)
@@ -228,8 +236,8 @@ function App() {
       setVEC(VEC)
     }
     const loop = setInterval(async () => {
-      // const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
-      const current = await axios.get(BASE_URL + 'cur')
+      const current = await axios.get('/cur' + `?serviceKey=${SERVICE_KEY}&pageNo=1&numOfRows=1000&dataType=json&base_date=${getCurrentTime().date}&base_time=${getCurrentTime().time}&nx=62&ny=120`)
+      // const current = await axios.get(BASE_URL + 'cur')
       if (current.data.response.body) {
         const item = current.data.response.body.items.item
         const { PTY, T1H, WSD, VEC, RN1 } = filterData(item)

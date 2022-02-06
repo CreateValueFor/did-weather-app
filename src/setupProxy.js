@@ -25,7 +25,8 @@ module.exports = function (app) {
     );
     app.use(
         proxy.createProxyMiddleware('/air', {
-            target: 'http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst',
+            // target: 'http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst',
+            target: 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty',
             changeOrigin: true,
             pathRewrite: {
                 "^/air": "",
